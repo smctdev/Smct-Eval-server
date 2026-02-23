@@ -615,7 +615,7 @@ class UserController extends Controller
             }else{
                 return response()->json([
                     "message"       =>  "User signature not found"
-                ]);
+                ],402);
             }
         }
 
