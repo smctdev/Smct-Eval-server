@@ -8,7 +8,6 @@ use App\Models\UsersEvaluation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
-use function Symfony\Component\Clock\now;
 
 class HrDashboardController extends Controller
 {
@@ -25,7 +24,13 @@ class HrDashboardController extends Controller
 
         $pending_eval = UsersEvaluation::where('status', 'pending')->whereNotNull('rating')->count() ?? 0;
         $completed_eval = UsersEvaluation::where('status', 'completed')->whereNotNull('rating')->count() ?? 0;
-        $employees = User::where('is_active', 'active')->count();
+        $employees = User::where('is_active', 'active')
+                        ->whereRelation('roles',
+                            fn($q)
+                            =>
+                            $q->whereNot('name', 'admin')->whereNot('name','hr')
+                        )
+                        ->count();
 
         return response()->json([
             'new_eval'            => $new_eval,

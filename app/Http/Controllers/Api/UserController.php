@@ -211,8 +211,7 @@ class UserController extends Controller
                     );
                 }
             )
-            ->whereRelation('roles' , fn($q)=> $q->whereNot("name", "admin")
-            )
+            ->whereRelation('roles' , "name", '!=', "admin")
             ->whereNot('id', Auth::id())
             ->latest('updated_at')
             ->get('positions');

@@ -54,12 +54,9 @@ Route::middleware('auth:sanctum')->group(
                 Route::get('getAllUsers', 'getAllUsers');
                 Route::get('getAllActiveUsers', 'getAllActiveUsers');
                 Route::get('getPendingRegistrations', 'getAllPendingUsers');
-
                 Route::get('getAllBranchHeads', 'getAllBranchHeads');
                 Route::get('getAllAreaManager', 'getAllAreaManager');
-
                 Route::get('getAllEmployeeByAuth', 'getAllEmployeeByAuth');
-
                 Route::get('showUser/{user}', 'showUser');
                 Route::get('getAllSignatureReset', 'getAllSignatureRequest');
                 Route::post('requestSignatureReset', 'requestSignatureReset');
