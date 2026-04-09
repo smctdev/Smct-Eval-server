@@ -388,7 +388,7 @@ class UserController extends Controller
             ->when($department_filter, fn($q) => $q->whereRelation('departments', 'departments.id', $department_filter))
             ->whereRelation('roles', fn($q) => $q->whereNot('name', 'admin'))
             ->search($search_filter)
-            ->orderBy('created_at','desc')
+            ->latest('id')
             ->paginate($perPage);
 
         return response()->json(
