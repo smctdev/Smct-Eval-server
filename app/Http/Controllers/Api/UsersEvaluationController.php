@@ -15,7 +15,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
 class UsersEvaluationController extends Controller
@@ -36,7 +35,6 @@ class UsersEvaluationController extends Controller
             $branches = array_merge(explode(',',$request->input('branch'))) ;
         }
 
-        Log::info('messgae', $branches);
         $all_evaluations = UsersEvaluation::query()
             ->with(
                 [
@@ -82,7 +80,7 @@ class UsersEvaluationController extends Controller
             [
                 'evaluations' => $all_evaluations,
             ],
-            200,
+            200
         );
     }
 
@@ -104,7 +102,8 @@ class UsersEvaluationController extends Controller
         return response()->json(
             [
                 'data' => $data,
-            ]
+            ],
+            200
         );
     }
 
@@ -239,7 +238,7 @@ class UsersEvaluationController extends Controller
             [
                 'message' => 'Submitted Successfully',
             ],
-            201,
+            201
         );
     }
 
@@ -360,7 +359,7 @@ class UsersEvaluationController extends Controller
             [
                 'message' => 'Submitted Successfully',
             ],
-            201,
+            201
         );
     }
 
@@ -494,7 +493,7 @@ class UsersEvaluationController extends Controller
             [
                 'message' => 'Submitted Successfully',
             ],
-            201,
+            201
         );
     }
 
@@ -607,7 +606,7 @@ class UsersEvaluationController extends Controller
             [
                 'message' => 'Submitted Successfully',
             ],
-            201,
+            201
         );
     }
 
@@ -731,7 +730,7 @@ class UsersEvaluationController extends Controller
             [
                 'message' => 'Submitted Successfully',
             ],
-            201,
+            201
         );
     }
 
@@ -744,7 +743,7 @@ class UsersEvaluationController extends Controller
             [
                 'user_eval' => $usersEvaluation->loadRelations(),
             ],
-            200,
+            200
         );
     }
 
@@ -798,7 +797,7 @@ class UsersEvaluationController extends Controller
                 'myEval_as_Employee' => $user_eval,
                 'years' => $years,
             ],
-            200,
+            200
         );
     }
 
@@ -850,7 +849,7 @@ class UsersEvaluationController extends Controller
             [
                 'myEval_as_Evaluator' => $user_eval,
             ],
-            200,
+            200
         );
     }
 
@@ -894,7 +893,7 @@ class UsersEvaluationController extends Controller
                 'message'   => 'Evaluation approved by employee successfully',
                 'data'      => $usersEvaluation->loadRelations(),
             ],
-            200,
+            200
         );
     }
 
@@ -909,7 +908,7 @@ class UsersEvaluationController extends Controller
             [
                 'message' => 'Deleted Successfully',
             ],
-            200,
+            200
         );
     }
 
@@ -920,7 +919,9 @@ class UsersEvaluationController extends Controller
         return response()->json(
             [
                 'years' => $years,
-            ]
+            ],
+            200
         );
     }
+
 }

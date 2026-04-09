@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\MemorandumViolation;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,13 +19,12 @@ class MemorandumViolationController extends Controller
         $memos = MemorandumViolation::all();
 
         return response()->json(
-               [
-                 'memos'   => $memos
-               ]
-               ,200
-            );
+            [
+                'memos'   => $memos
+            ],
+            200
+        );
     }
-
 
     public function auth_index(Request $request)
     {
@@ -36,15 +36,15 @@ class MemorandumViolationController extends Controller
 
         $memos = MemorandumViolation::where('user_id', $auth_user->id)
                    ->when( $search, fn ($q) => $q->whereLike('violation_title', "%{$search}%"))
-                   ->when( $month, fn ($q) => $q->whereMonth('violation_date', $month))
+                   ->when( $month, fn ($q) => $q->whereRaw("DATE_FORMAT(created_at, '%Y-%m') = ?", $month))
                    ->paginate($page);
 
         return response()->json(
-               [
-                 'memos'   => $memos
-               ]
-               ,200
-            );
+            [
+                'memos'   => $memos
+            ],
+            200
+        );
     }
     /**
      * Show the form for creating a new resource.
@@ -77,9 +77,9 @@ class MemorandumViolationController extends Controller
         }else{
             return response()->json(
                 [
-                   'message'   => 'Invalid file ot not found.'
-                ]
-                ,400
+                   'message'   => 'Invalid file or not found.'
+                ],
+                400
             );
         }
 
@@ -87,7 +87,7 @@ class MemorandumViolationController extends Controller
             [
                 'user_id'            =>  $validate['user_id'],
                 'violation_date'     =>  $validate['violation_date'],
-                'violation_title'     =>  $validate['title'],
+                'violation_title'    =>  $validate['title'],
                 'support_document'   =>  $path ?: null
             ]
         );
@@ -95,8 +95,8 @@ class MemorandumViolationController extends Controller
         return response()->json(
             [
                'message'   => 'Memo stored successfully'
-            ]
-            ,201
+            ],
+            201
         );
     }
 
@@ -108,8 +108,8 @@ class MemorandumViolationController extends Controller
         return response()->json(
             [
                 'memos' => $MemorandumViolation
-            ]
-            ,200
+            ],
+            200
         );
 
     }
@@ -117,11 +117,12 @@ class MemorandumViolationController extends Controller
     public function show_perUser($id)
     {
         $memos = MemorandumViolation::where('user_id', $id )->get();
+
         return response()->json(
             [
                 'memos' => $memos
-            ]
-            ,200
+            ],
+            200
         );
 
     }

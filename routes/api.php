@@ -11,9 +11,9 @@ use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\EmployeeDashboardController;
 use App\Http\Controllers\Api\EvaluatorDashboardController;
 use App\Http\Controllers\Api\HrDashboardController;
+use App\Http\Controllers\Api\MemorandumViolationController as ApiMemorandumViolationController;
 use App\Http\Controllers\Api\NotificationsController;
 use App\Http\Controllers\Api\UsersEvaluationController;
-use App\Http\Controllers\MemorandumViolationController;
 use Illuminate\Support\Facades\Auth;
 
 //public routes
@@ -125,7 +125,7 @@ Route::middleware('auth:sanctum')->group(
             }
         );
 
-        Route::controller(MemorandumViolationController::class)->group(
+        Route::controller(ApiMemorandumViolationController::class)->group(
             function(){
                 Route::get('showUserMemorandumViolation/{id}', 'show_perUser');
                 Route::get('myMemorandumViolations', 'auth_index');
@@ -150,14 +150,17 @@ Route::middleware('auth:sanctum')->group(
 
         Route::get('getAllRoles', [RoleController::class, 'index']);
 
-        Route::post('logout', function (Request $request) {
+        Route::post('logout', function (Request $request)
+        {
             Auth::guard("web")->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return response()->json([
-                'message' => 'Logged out successfully'
-            ], 200);
+            return response()->json(
+                [
+                    'message' => 'Logged out successfully'
+                ]
+                ,200);
         });
     }
 );

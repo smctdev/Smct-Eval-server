@@ -101,8 +101,8 @@ class User extends Authenticatable
                     =>
                     $user->whereRaw('CONCAT(fname, " ", lname) LIKE ?', ["%{$term}%"])
                         ->orWhereRaw('CONCAT(lname, " ", fname) LIKE ?', ["%{$term}%"])
-                        ->orWhere('email', 'like', "%{$term}%")
-                        ->orWhere('username', 'like', "%{$term}%")
+                        ->orWhereLike('email', "%{$term}%")
+                        ->orWhereLike('username', "%{$term}%")
                 )
             );
     }

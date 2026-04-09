@@ -18,7 +18,8 @@ class DepartmentController extends Controller
         return response()->json(
             [
                 'departments' => $departments
-            ]
+            ],
+            200
         );
     }
 
@@ -36,7 +37,7 @@ class DepartmentController extends Controller
                         'positions',
                         fn($position)
                         =>
-                        $position->where('label', 'LIKE', "%manager%")
+                        $position->whereLike('label', "%manager%")
                     ),
                 'users as employees_count' =>
                     fn($user)
@@ -45,16 +46,17 @@ class DepartmentController extends Controller
                         'positions',
                         fn($position)
                         =>
-                        $position->whereNot('label', 'LIKE', "%manager%")
+                        $position->whereNotLike('label', "%manager%")
                     )
             ])
-            ->when($search, fn($q) => $q->where('department_name', 'LIKE', "%{$search}%"))
+            ->when($search, fn($q) => $q->whereLike('department_name', "%{$search}%"))
             ->paginate($paginate);
 
         return response()->json(
             [
                 'departments'       => $all
-            ]
+            ],
+            200
         );
     }
 

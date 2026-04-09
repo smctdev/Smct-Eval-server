@@ -111,14 +111,14 @@ class UsersEvaluation extends Model
                         $query->whereHas('employee', function ($e) use ($search) {
                             $e->whereRaw("CONCAT(fname, ' ', lname) LIKE ?", ["%{$search}%"])
                                 ->orWhereRaw("CONCAT(lname, ' ', fname) LIKE ?", ["%{$search}%"])
-                                ->orWhere('email', 'like', "%{$search}%")
-                                ->orWhere('username', 'like', "%{$search}%");
+                                ->orWhereLike('email', "%{$search}%")
+                                ->orWhereLike('username', "%{$search}%");
                         })
                         ->orWhereHas('evaluator', function ($e) use ($search) {
                             $e->whereRaw("CONCAT(fname, ' ', lname) LIKE ?", ["%{$search}%"])
                                 ->orWhereRaw("CONCAT(lname, ' ', fname) LIKE ?", ["%{$search}%"])
-                                ->orWhere('email', 'like', "%{$search}%")
-                                ->orWhere('username', 'like', "%{$search}%");
+                                ->orWhereLike('email', "%{$search}%")
+                                ->orWhereLike('username', "%{$search}%");
                         });
                     });
                 }

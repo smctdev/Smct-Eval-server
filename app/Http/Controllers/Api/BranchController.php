@@ -38,7 +38,7 @@ class BranchController extends Controller
                         'positions',
                         fn($position)
                         =>
-                        $position->where('label', 'LIKE', "%manager%")
+                        $position->whereLike('label', "%manager%")
                     ),
                 'users as employees_count' =>
                     fn($user)
@@ -47,23 +47,24 @@ class BranchController extends Controller
                         'positions',
                         fn($position)
                         =>
-                        $position->whereNot('label', 'LIKE', "%manager%")
+                        $position->whereNotLike('label', "%manager%")
                     )
             ])
             ->when(
                 $search,
                 fn($q) =>
-                    $q->where('branch_code', 'LIKE', "%{$search}%")
-                    ->orWhere('branch_name', 'LIKE', "%{$search}%")
-                    ->orWhere('branch', 'LIKE', "%{$search}%")
-                    ->orWhere('acronym', 'LIKE', "%{$search}%")
+                    $q->whereLike('branch_code', "%{$search}%")
+                    ->orWhereLike('branch_name', "%{$search}%")
+                    ->orWhereLike('branch', "%{$search}%")
+                    ->orWhereLike('acronym', "%{$search}%")
             )
             ->paginate($paginate);
 
         return response()->json(
             [
                 'branches' => $all
-            ]
+            ],
+            200
         );
     }
 
@@ -114,7 +115,8 @@ class BranchController extends Controller
         return response()->json(
             [
                 'branch'        =>  $branch
-            ]
+            ],
+            200
         );
     }
 

@@ -20,7 +20,8 @@ class PositionController extends Controller
         return response()->json(
             [
                 'positions' => $positions
-            ]
+            ],
+            200
         );
     }
 
@@ -66,7 +67,8 @@ class PositionController extends Controller
         return response()->json(
             [
                 'position'  =>  $position
-            ]
+            ],
+            200
         );
     }
 
@@ -99,7 +101,8 @@ class PositionController extends Controller
         return response()->json(
             [
                 'message'       => Str::ucfirst($validate['label']) . ' position has successfully updated'
-            ]
+            ],
+            201
         );
     }
 
@@ -114,7 +117,8 @@ class PositionController extends Controller
         return response()->json(
             [
                 'message'    => Str::ucfirst($positionIndicator) . " position has been succesfully deleted"
-            ]
+            ],
+            200
         );
     }
 }

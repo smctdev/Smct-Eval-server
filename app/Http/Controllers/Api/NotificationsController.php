@@ -42,7 +42,8 @@ class NotificationsController extends Controller
         return response()->json(
             [
                 'message'       =>  "Successfully deleted"
-            ]
+            ],
+            200
         );
     }
 }

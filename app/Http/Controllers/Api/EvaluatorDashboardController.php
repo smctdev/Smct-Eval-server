@@ -57,7 +57,8 @@ class EvaluatorDashboardController extends Controller
                 'total_pending'               => $total_pending,
                 'total_approved'              => $total_approved,
                 'myEval_as_Evaluator'         => $user_eval
-            ]
+            ],
+            200
         );
     }
 
