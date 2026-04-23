@@ -49,9 +49,9 @@ class UsersEvaluationController extends Controller
                     'evaluator.roles'
                 ])
             ->search($search)
-            ->when($status, fn($q) => $q->where('status', $status))
+            ->when($status,  fn($q) => $q->where('status', $status))
             ->when($quarter, fn($q) => $q->where(fn($sub) => $sub->where('reviewTypeRegular', $quarter)->orWhere('reviewTypeProbationary', $quarter)))
-            ->when($year, fn($q) => $q->whereYear('created_at', $year))
+            ->when($year,    fn($q) => $q->whereYear('created_at', $year))
             ->when($rating, function ($q) use ($rating) {
                 match ($rating) {
                     'poor'      => $q->where('rating', '<', 2.5),
@@ -61,7 +61,7 @@ class UsersEvaluationController extends Controller
                     default     => $q->where('rating', 5),
                 };
             })
-          ->when(!empty($branches), function ($q) use ($branches) {
+            ->when(!empty($branches), function ($q) use ($branches) {
                 $q->whereHas('employee', function ($sub) use ($branches) {
                     $sub->where(function ($query) use ($branches) {
                         $query->whereHas('branches', function ($q) use ($branches) {

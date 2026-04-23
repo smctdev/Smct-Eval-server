@@ -14,7 +14,7 @@ class BranchController extends Controller
      */
     public function index()
     {
-        $branches = Branch::select('id','branch_code', 'branch_name')->get();
+        $branches = Branch::get(['id','branch_code', 'branch_name']);
 
         return response()->json(
             [
@@ -31,7 +31,7 @@ class BranchController extends Controller
 
         $all = Branch::query()->withCount(
             [
-                'users as managers_count' =>
+                'userBranch as managers_count' =>
                     fn($user)
                     =>
                     $user->whereHas(
@@ -40,7 +40,7 @@ class BranchController extends Controller
                         =>
                         $position->whereLike('label', "%manager%")
                     ),
-                'users as employees_count' =>
+                'userBranch as employees_count' =>
                     fn($user)
                     =>
                     $user->whereHas(
@@ -53,10 +53,7 @@ class BranchController extends Controller
             ->when(
                 $search,
                 fn($q) =>
-                    $q->whereLike('branch_code', "%{$search}%")
-                    ->orWhereLike('branch_name', "%{$search}%")
-                    ->orWhereLike('branch', "%{$search}%")
-                    ->orWhereLike('acronym', "%{$search}%")
+                    $q->whereAny(['branch_code', 'branch_name', 'branch', 'acronym'], 'LIKE', "%{$search}%")
             )
             ->paginate($paginate);
 
@@ -83,10 +80,10 @@ class BranchController extends Controller
     {
         $validate = $request->validate(
             [
-                'branch_code'        =>  ['required', 'string', 'regex:/^[A-Z0-9\- ]+$/', Rule::unique('branches', 'branch_code')],
-                'branch_name'        =>  ['required', 'string'],
-                'branch'             =>  ['required', 'string'],
-                'acronym'            =>  ['required', 'string', 'regex:/^[A-Z]+$/']
+                'branch_code'        => ['required', 'string', 'regex:/^[A-Z0-9\- ]+$/', Rule::unique('branches', 'branch_code')],
+                'branch_name'        => ['required', 'string'],
+                'branch'             => ['required', 'string'],
+                'acronym'            => ['required', 'string', 'regex:/^[A-Z]+$/']
             ]
         );
 

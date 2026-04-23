@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Position;
 use App\Models\Department;
+use App\Models\SubSection;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -26,20 +27,23 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $branch_id = Branch::all()->random()->id;
+        $department_id = $branch_id === 126 ? Department::all()->random()->id : null;
+
         return [
-            'position_id'   => Position::inRandomOrder()->first()->id ?? 1,  // fallback to 1 if none exists
-            'department_id' => Department::inRandomOrder()->first()->id ?? 1,  // fallback to 1 if none exists
+            'branch_id'     => $branch_id ,
+            'position_id'   => Position::all()->random()->id,
+            'department_id' => $department_id,
             'username'      => $this->faker->unique()->userName(),
             'date_hired'    => $this->faker->dateTime(),
             'fname'         => $this->faker->firstName(),
             'lname'         => $this->faker->lastName(),
             'email'         => $this->faker->unique()->safeEmail(),
-            'contact'       => '09'.rand(000000000,999999999),
-            'emp_id'        => random_int(0000000000, 9999999999),
+            'contact'       => '09'.str_pad(rand(0,999999999), 9, '0' , STR_PAD_LEFT),
+            'emp_id'        => str_pad(rand(0,9999999999), 10, '0' , STR_PAD_LEFT),
             'password'      => Hash::make('password'),
             'is_active'     => fake()->randomElement(["pending", "active"]),
             'avatar'        => null,
-            'branch_id'     => Branch::all()->random()->id
         ];
     }
 

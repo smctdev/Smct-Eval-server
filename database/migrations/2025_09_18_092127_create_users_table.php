@@ -16,9 +16,9 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Position::class, 'position_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignIdFor(Position::class, 'position_id')->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Department::class, 'department_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignIdFor(Branch::class)->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Branch::class, 'branch_id')->constrained()->cascadeOnDelete();
             $table->date("date_hired");
             $table->string("username");
             $table->string("fname");

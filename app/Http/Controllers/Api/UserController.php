@@ -13,7 +13,7 @@ use App\Notifications\EvalNotifications;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+// use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -22,6 +22,7 @@ use Spatie\Permission\Models\Role;
 // use App\Mail\BulkRegister;
 // use Illuminate\Support\Facades\Mail;
 
+use function Pest\Laravel\json;
 use function Symfony\Component\Clock\now;
 
 class UserController extends Controller
@@ -323,7 +324,7 @@ class UserController extends Controller
             })
             ->whereRelation('roles', 'name', '!=', 'admin')
             ->whereNot('id', Auth::id())
-            ->orderBy('created_at','desc')
+            ->latest('id')
             ->get('positions');
 
         return response()->json(
@@ -350,7 +351,7 @@ class UserController extends Controller
             ])
             ->whereNot('is_active', 'active')->whereNot('id', Auth::id())
             ->whereRelation('roles', fn($q) => $q->whereNot('name', 'admin'))
-            ->search($search_filter)->orderBy('created_at','desc')->paginate($perPage);
+            ->search($search_filter)->latest('id')->paginate($perPage);
 
         return response()->json(
             [
@@ -400,9 +401,57 @@ class UserController extends Controller
         );
     }
 
+    public function getSubordinate(Request $request)
+    {
+        $branch = $request->input('branch_id') ?: 126;
+        $department = $request->input('department_id');
+
+        $evaluators = User::with(
+                            [
+                                'branches',
+                                'departments',
+                                'positions',
+                            ]
+                        )
+                            ->where('branch_id', $branch)
+                            ->when($department , fn($q) => $q->where('department_id', $department))
+                            ->whereRelation('roles', fn($q) =>  $q->where('name', 'evaluator'))
+                            ->get();
+
+        $employees = User::with(
+                            [
+                                'branches',
+                                'departments',
+                                'positions',
+                            ]
+                        )
+                        ->where('branch_id', $branch)
+                        ->when($department , fn($q) => $q->where('department_id', $department))
+                        ->whereRelation('roles', fn($q) =>  $q->where('name', 'employee'))
+                        ->get();
+
+        return response()->json(
+            [
+                'evaluators'        =>  $evaluators,
+                'employees'         =>  $employees
+            ]
+            ,200
+        );
+    }
+
     public function showUser(User $user)
     {
-        $shownUser = $user->load('branches', 'departments', 'positions', 'evaluations', 'doesEvaluated', 'roles');
+        $shownUser = $user->load(
+            [
+                'branches',
+                'departments',
+                'positions',
+                'evaluations',
+                'doesEvaluated',
+                'roles'
+            ]
+        );
+
         return response()->json(
             [
                 'data' => $shownUser,
@@ -428,7 +477,7 @@ class UserController extends Controller
             ->where('is_active', 'active')
             ->search($search)
             ->whereIn('position_id', [35, 36, 37, 38]) // <--- all branch_manager/supervisor position id
-            ->orderBy('created_at','desc')
+            ->latest('id')
             ->get();
             // ->paginate($per_page);
 
@@ -457,7 +506,7 @@ class UserController extends Controller
             ->where('is_active', 'active')
             ->search($search)
             ->where('position_id', 16)
-            ->orderBy('created_at','desc')
+            ->latest('id')
             ->get();
             // ->paginate($per_page);
 
@@ -484,7 +533,7 @@ class UserController extends Controller
             ->where('requestSignatureReset', true)
             ->whereNot('approvedSignatureReset', true)
             ->search($search)
-            ->orderBy('created_at','desc')
+            ->latest('id')
             ->get();
             // ->paginate($per_page);
 
@@ -505,10 +554,10 @@ class UserController extends Controller
         $position_filter = $request->input('position_filter');
         $perPage = $request->input('per_page', 10);
 
-        if (!$manager->roles()->where('name', 'evaluator')->exists()) {
+        if (!$manager->roles()->where('name', 'evaluator')->orWhere('name', 'hr')->exists()) {
             return response()->json(
                 [
-                    'error' => 'Auth user is not a evaluator.',
+                    'error' => 'Auth user is not a evaluator or hr.',
                     $manager->roles()->pluck('name'),
                 ],
                 401
@@ -521,9 +570,7 @@ class UserController extends Controller
         $isAreaManager = $manager->position_id === 16;
         $isAVP = $manager->position_id === 31;
 
-        //array collections
         $branches = $manager->branches->pluck('id')->toArray();
-        Log::info('branches', $branches);
         $areaManagerPositionId = [16];
         $branchManagerPositionsId = [35, 36, 37, 38];
         $userQuery = User::query()
@@ -540,8 +587,8 @@ class UserController extends Controller
                 $q->whereRelation('branch', fn($query) => $query->whereIn('branches.id',array_merge([$manager->branch_id], $branches)))
                 ->orWhereRelation('branches', fn($query) => $query->whereIn('branches.id',array_merge([$manager->branch_id], $branches)))
             )
-            ->when($position_filter, fn($q) => $q->where('position_id', $position_filter))
             ->where('id', '!=', $manager->id)
+            ->when($position_filter, fn($q) => $q->where('position_id', $position_filter))
             ->when($isAreaManager, function ($q) use ($branchManagerPositionsId) {
                 $q->whereIn('position_id', $branchManagerPositionsId);
             })
@@ -558,7 +605,7 @@ class UserController extends Controller
                 $q->where('department_id', $manager->department_id)->orWhereRelation('positions', 'id', $position_filter ?: 16);
             })
             ->search($search)
-            ->orderBy('created_at','desc');
+            ->latest('id');
 
         $new_hires = (clone $userQuery)->whereBetween('created_at', [Carbon::now()->subDays(7), now()])->count();
 

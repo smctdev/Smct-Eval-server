@@ -65,58 +65,62 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $admin = [
             'position_id'       => 11,
-            'department_id'     => 5,
+            'department_id'     => null,
+            'branch_id'         => 126,
             'username'          => 'admin',
             'fname'             => 'System',
             'lname'             => 'Administrator',
             'email'             => 'admin@smct.com',
-            'contact'           => '09'.rand(000000000,111111111),
+            'contact'           => '09'.str_pad(rand(0,999999999), 9, '0', STR_PAD_LEFT ),
             'password'          => 'password',
             'is_active'         => 'active',
             'date_hired'        =>  now(),
-            'emp_id'            => rand(1000000000,9999999999)
+            'emp_id'            => str_pad(rand(0,9999999999), 10, '0', STR_PAD_LEFT )
         ];
 
         $hr = [
             'position_id'       => 82,
-            'department_id'     => 5,
+            'department_id'     => null,
+            'branch_id'         => 126,
             'username'          => 'hr',
             'fname'             => 'HR',
             'lname'             => 'Administrator',
             'email'             => 'hr@smct.com',
-            'contact'           => '09'.rand(000000000,111111111),
+            'contact'           => '09'.str_pad(rand(0,999999999), 9, '0', STR_PAD_LEFT ),
             'password'          => 'password',
             'is_active'         => 'active',
             'date_hired'        =>  now(),
-            'emp_id'            => rand(1000000000,9999999999)
+            'emp_id'            => str_pad(rand(0,9999999999), 10, '0', STR_PAD_LEFT )
         ];
 
         $evaluator = [
-            'position_id'       => 113,
-            'department_id'     => 5,
+            'position_id'       => 95,
+            'department_id'     => 8,
+            'branch_id'         => 126,
             'username'          => 'evaluator',
             'fname'             => 'EVALUATOR',
             'lname'             => 'EVALUATOR',
             'email'             => 'evaluator@smct.com',
-            'contact'           => '09'.rand(000000000,111111111),
+            'contact'           => '09'.str_pad(rand(0,999999999), 9, '0', STR_PAD_LEFT ),
             'password'          => 'password',
             'is_active'         => 'active',
             'date_hired'        =>  now(),
-            'emp_id'            => rand(1000000000,9999999999)
+            'emp_id'            => str_pad(rand(0,9999999999), 10, '0', STR_PAD_LEFT )
         ];
 
         $employee = [
             'position_id'       => 8,
-            'department_id'     => 5,
+            'department_id'     => 8,
+            'branch_id'         => 126,
             'username'          => 'employee',
             'fname'             => 'EMPLOYEE',
             'lname'             => 'EMPLOYEE',
             'email'             => 'employee@smct.com',
-            'contact'           => '09'.rand(000000000,111111111),
+            'contact'           => '09'.str_pad(rand(0,999999999), 9, '0', STR_PAD_LEFT ),
             'password'          => 'password',
             'is_active'         => 'active',
             'date_hired'        =>  now(),
-            'emp_id'            => rand(1000000000,9999999999)
+            'emp_id'            => str_pad(rand(0,9999999999), 10, '0', STR_PAD_LEFT )
         ];
 
         $role_admin->users()->create($admin);

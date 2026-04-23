@@ -13,7 +13,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::select('id','department_name')->get();
+        $departments = Department::get(['id','department_name']);
 
         return response()->json(
             [
@@ -39,6 +39,7 @@ class DepartmentController extends Controller
                         =>
                         $position->whereLike('label', "%manager%")
                     ),
+
                 'users as employees_count' =>
                     fn($user)
                     =>

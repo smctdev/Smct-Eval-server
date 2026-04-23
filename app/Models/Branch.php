@@ -8,13 +8,13 @@ class Branch extends Model
 {
      protected $guarded=[];
 
-     public function users(){
+     public function usersBranches(){
          return $this->belongsToMany(User::class, 'branch_user');
     }
 
-    public function userBranches()
+    public function userBranch()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'branch_id');
     }
 
 }
