@@ -53,10 +53,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function branches()
-    {
-        return $this->belongsToMany(Branch::class, 'branch_user');
-    }
      public function branch()
     {
         return $this->belongsTo(Branch::class, 'branch_id');
@@ -72,11 +68,6 @@ class User extends Authenticatable
         return $this->belongsTo(Position::class, 'position_id');
     }
 
-    public function sections()
-    {
-        return $this->belongsTo(SubSection::class, 'section_id');
-    }
-
     public function evaluations()
     {
         return $this->hasMany(UsersEvaluation::class, 'employee_id');
@@ -90,6 +81,21 @@ class User extends Authenticatable
     public function memos()
     {
         return $this->hasMany(MemorandumViolation::class, 'evaluator_id');
+    }
+
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class, 'branch_user');
+    }
+
+    public function assignedEmployees()
+    {
+        return $this->belongsToMany(User::class, 'assigned_user', 'evaluator_id', 'employee_id');
+    }
+
+    public function assignedEvaluators()
+    {
+        return $this->belongsToMany(User::class, 'assigned_user',  'employee_id', 'evaluator_id');
     }
 
     public function getFullNameAttribute()
@@ -112,9 +118,8 @@ class User extends Authenticatable
                             $q->whereRaw("CONCAT(fname, ' ', lname) LIKE ?", ["%{$term}%"])
                             ->orWhereRaw("CONCAT(lname, ' ', fname) LIKE ?", ["%{$term}%"]);
                         })
-                        ->orWhereAny( ['email', 'username'], 'LIKE', "%{$term}%")
+                        ->orWhereAny(['email', 'username'], 'LIKE', "%{$term}%")
                 )
             );
     }
-
 }

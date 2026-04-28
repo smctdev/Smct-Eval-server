@@ -408,26 +408,32 @@ class UserController extends Controller
 
         $evaluators = User::with(
                             [
+                                'branch',
                                 'branches',
                                 'departments',
                                 'positions',
+                                'roles',
                             ]
                         )
+                            ->where('is_active','active')
                             ->where('branch_id', $branch)
                             ->when($department , fn($q) => $q->where('department_id', $department))
-                            ->whereRelation('roles', fn($q) =>  $q->where('name', 'evaluator'))
+                            ->whereRelation('roles', 'name', 'evaluator')
                             ->get();
 
         $employees = User::with(
                             [
+                                'branch',
                                 'branches',
                                 'departments',
                                 'positions',
+                                'roles',
                             ]
                         )
+                        ->where('is_active','active')
                         ->where('branch_id', $branch)
                         ->when($department , fn($q) => $q->where('department_id', $department))
-                        ->whereRelation('roles', fn($q) =>  $q->where('name', 'employee'))
+                        ->whereRelation('roles', 'name', 'employee')
                         ->get();
 
         return response()->json(
@@ -439,10 +445,36 @@ class UserController extends Controller
         );
     }
 
+    public function getAllEvaluators(Request $request)
+    {
+        $per_page = $request->input('per_page',10);
+        $evaluators = User::with(
+                    [
+                        'branch',
+                        'branches',
+                        'positions',
+                        'departments',
+                        'roles'
+                    ]
+                )
+                ->where('is_active', 'active')
+                ->whereRelation('roles', 'name', 'evaluator')
+                ->paginate($per_page);
+
+        return response()->json(
+            [
+                'message'       =>  'List of all evaluator',
+                'evaluators'    =>  $evaluators
+            ]
+            ,200
+        );
+    }
+
     public function showUser(User $user)
     {
         $shownUser = $user->load(
             [
+                'branch',
                 'branches',
                 'departments',
                 'positions',
@@ -455,8 +487,8 @@ class UserController extends Controller
         return response()->json(
             [
                 'data' => $shownUser,
-            ],
-            200
+            ]
+            ,200
         );
     }
 
@@ -473,7 +505,8 @@ class UserController extends Controller
                     'departments',
                     'positions',
                     'roles'
-                ])
+                ]
+            )
             ->where('is_active', 'active')
             ->search($search)
             ->whereIn('position_id', [35, 36, 37, 38]) // <--- all branch_manager/supervisor position id
@@ -484,8 +517,8 @@ class UserController extends Controller
         return response()->json(
             [
                 'branch_heads' => $users,
-            ],
-            200
+            ]
+            ,200
         );
     }
 
@@ -502,7 +535,8 @@ class UserController extends Controller
                     'departments',
                     'positions',
                     'roles'
-                ])
+                ]
+            )
             ->where('is_active', 'active')
             ->search($search)
             ->where('position_id', 16)
@@ -513,8 +547,8 @@ class UserController extends Controller
         return response()->json(
             [
                 'branch_heads' => $users,
-            ],
-            200
+            ]
+            ,200
         );
     }
 
@@ -524,12 +558,13 @@ class UserController extends Controller
         // $per_page = $request->input('per_page', 10);
 
         $users = User::query()->with(
-            [
-                'branch',
-                'branches',
-                'departments',
-                'positions'
-            ])
+                [
+                    'branch',
+                    'branches',
+                    'departments',
+                    'positions'
+                ]
+            )
             ->where('requestSignatureReset', true)
             ->whereNot('approvedSignatureReset', true)
             ->search($search)
@@ -540,8 +575,8 @@ class UserController extends Controller
         return response()->json(
             [
                 'users' => $users,
-            ],
-            200
+            ]
+            ,200
         );
     }
 
@@ -554,7 +589,8 @@ class UserController extends Controller
         $position_filter = $request->input('position_filter');
         $perPage = $request->input('per_page', 10);
 
-        if (!$manager->roles()->where('name', 'evaluator')->orWhere('name', 'hr')->exists()) {
+        if (!$manager->roles()->where('name', 'evaluator')->orWhere('name', 'hr')->exists())
+        {
             return response()->json(
                 [
                     'error' => 'Auth user is not a evaluator or hr.',
@@ -581,7 +617,8 @@ class UserController extends Controller
                     'branches',
                     'positions',
                     'roles'
-                ])
+                ]
+            )
             ->where('is_active', 'active')
             ->where( fn ($q) =>
                 $q->whereRelation('branch', fn($query) => $query->whereIn('branches.id',array_merge([$manager->branch_id], $branches)))
@@ -616,8 +653,8 @@ class UserController extends Controller
             [
                 'employees' => $employees,
                 'new_count' => $new_hires,
-            ],
-            200
+            ]
+            ,200
         );
     }
 
@@ -666,15 +703,16 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'Updated Successfully',
-            ],
-            200
+            ]
+            ,200
         );
     }
 
     public function updateProfileUserAuth(Request $request)
     {
         $user = Auth::user();
-        if (!$user) {
+        if (!$user)
+        {
             return response()->json(
                 [
                     'message' => 'Unauthenticated.',
@@ -683,7 +721,8 @@ class UserController extends Controller
             );
         }
 
-        if (empty($request->signature) && empty($user->signature)) {
+        if (empty($request->signature) && empty($user->signature))
+        {
             return response()->json(
                 [
                     'message' => 'Signature is required',
@@ -707,12 +746,14 @@ class UserController extends Controller
             'email'     => $validated['email'] ?: $user->email,
         ];
 
-        if ($request->filled('new_password') && $request->filled('confirm_password')) {
+        if ($request->filled('new_password') && $request->filled('confirm_password'))
+        {
             $items['password'] = $validated['confirm_password'];
         }
 
         //file handling | storing
-        if ($request->file('signature')) {
+        if ($request->file('signature'))
+        {
             $signature = $request->file('signature');
             $name = time() . '-' . $user->username . '.' . $signature->getClientOriginalExtension();
             $path = $signature->storeAs('user-signatures', $name, 'public');
@@ -740,8 +781,8 @@ class UserController extends Controller
             [
                 'status'    => true,
                 'message'   => 'Uploaded Successfully',
-            ],
-            200
+            ]
+            ,200
         );
     }
 
@@ -766,8 +807,8 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'Approved',
-            ],
-            200
+            ]
+            ,200
         );
     }
 
@@ -794,8 +835,8 @@ class UserController extends Controller
                 return response()->json(
                     [
                         'message' => 'User signature not found',
-                    ],
-                    402
+                    ]
+                    ,402
                 );
             }
         }
@@ -803,8 +844,8 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'User doesnt have a signature',
-            ],
-            402
+            ]
+            ,402
         );
     }
 
@@ -821,8 +862,8 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'Rejected Successfully',
-            ],
-            200
+            ]
+            ,200
         );
     }
 
@@ -837,8 +878,8 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'Approved',
-            ],
-            200
+            ]
+            ,200
         );
     }
 
@@ -849,8 +890,8 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'User Branch Updated',
-            ],
-            200
+            ]
+            ,200
         );
     }
 
@@ -860,9 +901,9 @@ class UserController extends Controller
 
         return response()->json(
             [
-                'message' => 'All user branches removed',
-            ],
-            200
+                'message' => 'All user assigned branches removed',
+            ]
+            ,200
         );
     }
 
@@ -876,10 +917,24 @@ class UserController extends Controller
         return response()->json(
             [
                 'message' => 'Deleted Successfully',
-            ],
-            204
+            ]
+            ,204
         );
     }
+
+    // public function test()
+    // {
+    //     $evaluator = User::findOrFail(1);
+    //     $employees = [2];
+
+    //     $evaluator->assignedEmployees()->syncWithoutDetaching($employees);
+    //     return response()->json(
+    //         [
+    //             'message'   =>  "success"
+    //         ]
+    //         ,201
+    //     );
+    // }
 
     // public function test()
     // {

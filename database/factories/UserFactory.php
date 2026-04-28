@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Position;
 use App\Models\Department;
-use App\Models\SubSection;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
