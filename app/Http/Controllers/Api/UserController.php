@@ -13,6 +13,7 @@ use App\Notifications\EvalNotifications;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 // use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
@@ -683,7 +684,7 @@ class UserController extends Controller
                     'roles'
                 ]
             )
-            // ->doesntHave('assignedEvaluators')
+            ->doesntHave('assignedEvaluators')
             ->where('is_active', 'active')
             ->where( fn ($q) =>
                 $q->whereRelation('branch', fn($query) => $query->whereIn('branches.id',array_merge([$user->branch_id], $branches)))
@@ -707,7 +708,8 @@ class UserController extends Controller
                 $q->where('department_id', $user->department_id)->orWhereRelation('positions', 'id', $position_filter ?: 16);
             })
             ->search($search)
-            ->latest('id');
+            ->latest('id')
+            ->get();
 
             return response()->json(
                 [
@@ -945,13 +947,26 @@ class UserController extends Controller
 
     public function updateUserBranch(User $user, Request $request)
     {
-        $user->branches()->syncWithoutDetaching($request->branch_ids);
+        $user->branches()->sync([$request->branch_ids]);
 
         return response()->json(
             [
                 'message' => 'User Branch Updated',
             ]
             ,200
+        );
+    }
+
+    public function assignEmployees(User $user, Request $request)
+    {
+
+        $user->assignedEmployees()->sync([$request->employee_id]);
+
+        return response()->json(
+            [
+                'message'   =>  "success"
+            ]
+            ,201
         );
     }
 
@@ -982,27 +997,4 @@ class UserController extends Controller
         );
     }
 
-    // public function test()
-    // {
-    //     $evaluator = User::findOrFail(1);
-    //     $employees = [2];
-
-    //     $evaluator->assignedEmployees()->syncWithoutDetaching($employees);
-    //     return response()->json(
-    //         [
-    //             'message'   =>  "success"
-    //         ]
-    //         ,201
-    //     );
-    // }
-
-    // public function test()
-    // {
-    //     $user  = User::findOrFail(1);
-    //     $user->notify(new EvalNotifications("This is a test notification for broadcasting."));
-
-    //     return response()->json([
-    //         'data'  =>  "success"
-    //     ], 200);
-    // }
 }

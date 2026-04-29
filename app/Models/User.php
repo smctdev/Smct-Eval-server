@@ -13,6 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -116,7 +117,7 @@ class User extends Authenticatable
                     =>
                     $user->where( function ($q) use ($term){
                             $q->whereRaw("CONCAT(fname, ' ', lname) LIKE ?", ["%{$term}%"])
-                            ->orWhereRaw("CONCAT(lname, ' ', fname) LIKE ?", ["%{$term}%"]);
+                                ->orWhereRaw("CONCAT(lname, ' ', fname) LIKE ?", ["%{$term}%"]);
                         })
                         ->orWhereAny(['email', 'username'], 'LIKE', "%{$term}%")
                 )

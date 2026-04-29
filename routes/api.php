@@ -24,7 +24,7 @@ Route::controller(UserController::class)->group(function () {
     Route::post('register', 'registerUser');
 });
 
-// Route::get('getAllEvaluatorAssignedEmployees/{user}', [UserController::class, 'getAllEvaluatorAssignedEmployees']);
+Route::get('getAllEvaluatorEmployees/{user}', [UserController::class, 'getAllEvaluatorEmployees']);
 
 Route::get('positions', [PositionController::class, 'index']);
 Route::get('branches', [BranchController::class, 'index']);
@@ -50,7 +50,6 @@ Route::get('/profile', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(
     function () {
-
         Route::controller(UserController::class)->group(
             function () {
                 Route::get('getAllUsers', 'getAllUsers');
@@ -64,6 +63,7 @@ Route::middleware('auth:sanctum')->group(
                 Route::get('getSubordinate', 'getSubordinate');
                 Route::get('getAllEvaluators', 'getAllEvaluators');
                 Route::get('getAllEvaluatorAssignedEmployees/{user}', 'getAllEvaluatorAssignedEmployees');
+                Route::get('getAllEvaluatorEmployees/{user}', 'getAllEvaluatorEmployees');
                 Route::post('requestSignatureReset', 'requestSignatureReset');
                 Route::post('bulkRegisterUser', 'bulkRegisterUser');
                 Route::post('approvedSignatureReset/{user}', 'approvedSignatureReset');
@@ -72,6 +72,7 @@ Route::middleware('auth:sanctum')->group(
                 Route::post('uploadAvatar', 'uploadAvatar');
                 Route::post('updateProfileUserAuth', 'updateProfileUserAuth');
                 Route::post('addUser', 'store');
+                Route::post('assignEmployees/{user}', 'assignEmployees');
                 Route::post('updateUserBranch/{user}', 'updateUserBranch');
                 Route::post('removeUserBranches/{user}', 'removeUserBranches');
                 Route::post('approveRegistration/{user}', 'approveRegistration');
