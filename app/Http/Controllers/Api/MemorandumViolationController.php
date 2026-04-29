@@ -64,31 +64,16 @@ class MemorandumViolationController extends Controller
                 'user_id'              => ['required', 'numeric', Rule::exists(User::class, 'id')],
                 'violation_date'       => ['required', 'date'],
                 'title'                => ['required', 'string'],
-                'document'             => ['required', 'file']
+                'document'             => ['required', 'string']
             ]
         );
-
-
-        if($request->hasFile('document'))
-        {
-               $file  = $request->file('document');
-               $name  = time().'-'.$validate['user_id'].'.'.$file->getClientOriginalExtension();
-               $path  = $file->storeAs('memo-files', $name, 'public');
-        }else{
-            return response()->json(
-                [
-                   'message'   => 'Invalid file or not found.'
-                ],
-                400
-            );
-        }
 
         MemorandumViolation::create(
             [
                 'user_id'            =>  $validate['user_id'],
                 'violation_date'     =>  $validate['violation_date'],
                 'violation_title'    =>  $validate['title'],
-                'support_document'   =>  $path ?: null
+                'summary'            =>  $validate['document']
             ]
         );
 

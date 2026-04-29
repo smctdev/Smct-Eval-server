@@ -22,7 +22,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Session Lifetime
+    | Session
     |--------------------------------------------------------------------------
     |
     | Here you may specify the number of minutes that you wish the session

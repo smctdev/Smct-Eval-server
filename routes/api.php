@@ -24,7 +24,8 @@ Route::controller(UserController::class)->group(function () {
     Route::post('register', 'registerUser');
 });
 
-// Route::get('getAllEvaluators', [UserController::class, 'getAllEvaluators']);
+// Route::get('getAllEvaluatorAssignedEmployees/{user}', [UserController::class, 'getAllEvaluatorAssignedEmployees']);
+
 Route::get('positions', [PositionController::class, 'index']);
 Route::get('branches', [BranchController::class, 'index']);
 Route::get('departments', [DepartmentController::class, 'index']);
@@ -62,6 +63,7 @@ Route::middleware('auth:sanctum')->group(
                 Route::get('getAllSignatureReset', 'getAllSignatureRequest');
                 Route::get('getSubordinate', 'getSubordinate');
                 Route::get('getAllEvaluators', 'getAllEvaluators');
+                Route::get('getAllEvaluatorAssignedEmployees/{user}', 'getAllEvaluatorAssignedEmployees');
                 Route::post('requestSignatureReset', 'requestSignatureReset');
                 Route::post('bulkRegisterUser', 'bulkRegisterUser');
                 Route::post('approvedSignatureReset/{user}', 'approvedSignatureReset');

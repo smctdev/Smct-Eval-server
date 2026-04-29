@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('users_evaluations', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class, 'employee_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignIdFor(User::class, 'evaluator_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignIdFor(User::class, 'employee_id')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class, 'evaluator_id')->constrained()->cascadeOnDelete();
 
             $table->decimal('rating', 3, 2);
             $table->string('percentage');
@@ -30,13 +30,13 @@ return new class extends Migration
             $table->boolean('reviewTypeOthersImprovement')->nullable();
             $table->string("reviewTypeOthersCustom")->nullable();
 
-            $table->string("priorityArea1")->nullable();
+            $table->string("priorityArea1");
             $table->string("priorityArea2")->nullable();
             $table->string("priorityArea3")->nullable();
 
             $table->string("remarks")->nullable();
 
-            $table->date('evaluatorApprovedAt')->nullable();
+            $table->date('evaluatorApprovedAt');
             $table->date('employeeApprovedAt')->nullable();
 
             $table->timestamps();
