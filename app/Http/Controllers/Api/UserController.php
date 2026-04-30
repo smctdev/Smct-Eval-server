@@ -947,7 +947,11 @@ class UserController extends Controller
 
     public function updateUserBranch(User $user, Request $request)
     {
-        $user->branches()->sync([$request->branch_ids]);
+        $branchIds = is_array($request->branch_ids)
+            ? $request->branch_ids
+            : explode(',', $request->branch_ids);
+
+        $user->branches()->sync($branchIds);
 
         return response()->json(
             [
@@ -959,15 +963,19 @@ class UserController extends Controller
 
     public function assignEmployees(User $user, Request $request)
     {
+        $payloadIds = $request->employee_ids ?: [];
+            $employeeIds = is_array($payloadIds)
+                ? $payloadIds
+                : explode(',', $payloadIds);
 
-        $user->assignedEmployees()->sync([$request->employee_id]);
+            $user->assignedEmployees()->sync($employeeIds);
 
-        return response()->json(
-            [
-                'message'   =>  "success"
-            ]
-            ,201
-        );
+            return response()->json(
+                [
+                    'message'   =>  "success"
+                ]
+                ,201
+            );
     }
 
     public function removeUserBranches(User $user)
@@ -986,7 +994,6 @@ class UserController extends Controller
     public function deleteUser(User $user)
     {
         // UsersEvaluation::where('employee_id', $user->id)->orWhere('evaluator_id', $user->id)->delete();
-
         $user->delete();
 
         return response()->json(
