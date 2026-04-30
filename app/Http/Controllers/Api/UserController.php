@@ -586,6 +586,9 @@ class UserController extends Controller
 
     public function getAllEvaluatorAssignedEmployees(Request $request,User $user)
     {
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
+
         $evaluatorId = $user->id;
         $employees = User::with(
                             [
@@ -597,8 +600,9 @@ class UserController extends Controller
                             ]
                         )
                         ->whereRelation('assignedEvaluators', 'evaluator_id', $evaluatorId)
+                        ->search($search)
                         ->latest('id')
-                        ->get();
+                        ->paginate($perPage);
 
         return response()->json(
                 [
@@ -750,7 +754,6 @@ class UserController extends Controller
             'position_id'   => $validate['position_id'],
             'department_id' => $validate['department_id'] ?: null,
             'username'      => $validate['username'],
-            'contact'       => $validate['contact'],
             'contact'       => $validate['contact'],
             'emp_id'        => $validate['employeeId'],
             'branch_id'     => $validate['branch_id']
