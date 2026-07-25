@@ -92,6 +92,7 @@ class BranchBasicAreaManager extends FormRequest
             'qualityOfWorkComments12'               => ['nullable', 'string'],
         ];
     }
+
     public function adaptabilityRules()
     {
         return [

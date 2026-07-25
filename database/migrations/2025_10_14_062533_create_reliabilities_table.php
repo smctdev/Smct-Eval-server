@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\UsersEvaluaion;
 use App\Models\UsersEvaluation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
