@@ -48,7 +48,7 @@ class UpdateBranchBasic extends FormRequest
             'priority_area_1'                       => ['required', 'string', 'min:20'],
             'priority_area_2'                       => ['nullable', 'string', 'min:20'],
             'priority_area_3'                       => ['nullable', 'string', 'min:20'],
-            'remarks'                               => ['nullable', 'string', 'min:20'],
+            'remarks'                               => ['nullable', 'string'],
         ];
     }
 

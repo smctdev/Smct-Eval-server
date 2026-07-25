@@ -47,7 +47,7 @@ class BranchRankNFile extends FormRequest
             'priorityArea1'                         => ['required', 'string', 'min:20'],
             'priorityArea2'                         => ['nullable', 'string', 'min:20'],
             'priorityArea3'                         => ['nullable', 'string', 'min:20'],
-            'remarks'                               => ['nullable', 'string', 'min:20'],
+            'remarks'                               => ['nullable', 'string',],
         ];
     }
 
