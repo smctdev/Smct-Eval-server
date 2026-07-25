@@ -35,12 +35,12 @@ return new class extends Migration
             $table->boolean('reviewTypeOthersImprovement')->nullable();
             $table->string("reviewTypeOthersCustom")->nullable();
 
-            $table->string("priorityArea1");
-            $table->string("priorityArea2")->nullable();
-            $table->string("priorityArea3")->nullable();
+            $table->text("priorityArea1");
+            $table->text("priorityArea2")->nullable();
+            $table->text("priorityArea3")->nullable();
 
-            $table->string("remarks")->nullable();
-            $table->string("noteIfRejected")->nullable();
+            $table->text("remarks")->nullable();
+            $table->text("noteIfRejected")->nullable();
 
             $table->date('evaluatorApprovedAt');
             $table->date('firstApproverApprovedAt')->nullable();
