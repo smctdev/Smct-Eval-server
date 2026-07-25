@@ -47,7 +47,7 @@ class BranchBasicAreaManager extends FormRequest
             'priorityArea1'                         => ['required', 'string', 'min:20'],
             'priorityArea2'                         => ['nullable', 'string', 'min:20'],
             'priorityArea3'                         => ['nullable', 'string', 'min:20'],
-            'remarks'                               => ['nullable', 'string', 'min:20'],
+            'remarks'                               => ['nullable', 'string'],
         ];
     }
 
@@ -92,6 +92,7 @@ class BranchBasicAreaManager extends FormRequest
             'qualityOfWorkComments12'               => ['nullable', 'string'],
         ];
     }
+
     public function adaptabilityRules()
     {
         return [

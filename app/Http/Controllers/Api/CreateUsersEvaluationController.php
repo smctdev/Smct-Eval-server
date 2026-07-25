@@ -15,7 +15,6 @@ use App\Models\UsersEvaluation;
 use App\Notifications\EvalNotifications;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
 class CreateUsersEvaluationController extends Controller
@@ -185,12 +184,9 @@ class CreateUsersEvaluationController extends Controller
             );
 
         } catch (\Throwable $e) {
-
-            Log::error($e);
-
             return response()->json(
                 [
-                    'message' => 'Something went wrong.',
+                    'message' => $e->getMessage(),
                 ],
                 500
             );
@@ -356,14 +352,11 @@ class CreateUsersEvaluationController extends Controller
             );
 
         } catch (\Throwable $e) {
-
-            Log::error($e);
-
             return response()->json(
                 [
-                    'message' => 'Something went wrong.',
-                ]
-                ,500
+                    'message' => $e->getMessage(),
+                ],
+                500
             );
         }
     }
@@ -543,14 +536,12 @@ class CreateUsersEvaluationController extends Controller
             );
 
         } catch (\Throwable $e) {
-
-            Log::error($e);
-
             return response()->json(
                 [
-                    'message' => 'Something went wrong.',
-                ]
-                , 500);
+                    'message' => $e->getMessage(),
+                ],
+                500
+            );
         }
     }
 
@@ -703,15 +694,11 @@ class CreateUsersEvaluationController extends Controller
             );
 
         } catch (\Throwable $e) {
-
-            Log::error($e);
-
             return response()->json(
                 [
-                    'message' => 'Something went wrong.',
-                    'error' => $e->getMessage()
-                ]
-                ,500
+                    'message' => $e->getMessage(),
+                ],
+                500
             );
         }
     }
@@ -875,12 +862,9 @@ class CreateUsersEvaluationController extends Controller
             );
 
         } catch (\Throwable $e) {
-
-            Log::error($e);
-
             return response()->json(
                 [
-                    'message' => 'Something went wrong.',
+                    'message' => $e->getMessage(),
                 ],
                 500
             );

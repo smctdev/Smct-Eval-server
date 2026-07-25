@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\UsersEvaluaion;
 use App\Models\UsersEvaluation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -18,7 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(UsersEvaluation::class, 'users_evaluation_id')->constrained()->cascadeOnDelete();
             $table->integer('question_number');
             $table->integer('score');
-            $table->string('comment')->nullable();
+            $table->text('comment')->nullable();
             $table->timestamps();
         });
     }
