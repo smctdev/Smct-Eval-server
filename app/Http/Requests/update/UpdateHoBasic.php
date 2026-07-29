@@ -33,7 +33,7 @@ class UpdateHoBasic extends FormRequest
         );
     }
 
-   public function mainRules()
+    public function mainRules()
     {
         return [
             'rating'                                => ['required', 'numeric'],
@@ -51,7 +51,7 @@ class UpdateHoBasic extends FormRequest
         ];
     }
 
-     public function jobKnowledgeRules()
+    public function jobKnowledgeRules()
     {
         return [
             'job_knowledge'                             => ['required', 'array'],

@@ -39,10 +39,10 @@ class EmployeeDashboardController extends Controller
         $sum_ratings = UsersEvaluation::where('employee_id', $user->id)->whereIn('status', ['pending', 'completed'])->whereNotNull("rating")->sum('rating') ?: 0;
         $average = empty(!$total_evaluations) ? round($sum_ratings / $total_evaluations, 2) : 0;
         $recent_evaluation_rating = UsersEvaluation::where('employee_id', $user->id)
-            ->whereIn('status', ['pending', 'completed'])
-            ->latest('created_at')
-            ->select('id', 'rating')
-            ->first();
+                ->whereIn('status', ['pending', 'completed'])
+                ->latest('created_at')
+                ->select('id', 'rating')
+                ->first();
 
         return response()->json(
             [
@@ -78,10 +78,10 @@ class EmployeeDashboardController extends Controller
         $sum_ratings = UsersEvaluation::where('employee_id', $user->id)->whereIn('status', ['pending', 'completed'])->whereNotNull("rating")->sum('rating') ?: 0;
         $average = empty(!$total_evaluations) ? round($sum_ratings / $total_evaluations, 2) : 0;
         $recent_evaluation = UsersEvaluation::where('employee_id', $user->id)
-                            ->whereIn('status', ['pending', 'completed'])
-                            ->latest('created_at')
-                            ->select('id', 'rating')
-                            ->first();
+                                ->whereIn('status', ['pending', 'completed'])
+                                ->latest('created_at')
+                                ->select('id', 'rating')
+                                ->first();
 
         $highest_rating = UsersEvaluation::where('employee_id', $user->id)
                             ->whereIn('status', ['pending', 'completed'])
