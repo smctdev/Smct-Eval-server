@@ -32,7 +32,7 @@ class UsersEvaluationController extends Controller
             $branches = array_merge(explode(',',$request->input('branch'))) ;
         }
 
-        $isHr = Auth::user()->hasRole('hr');
+        // $isHr = Auth::user()->hasRole('hr');
 
         $all_evaluations = UsersEvaluation::query()
             ->with(
@@ -60,7 +60,7 @@ class UsersEvaluationController extends Controller
                     "created_at",
                 ]
             )
-            ->when($isHr, fn($q) => $q->whereIn('status', [EvalStatus::pending, EvalStatus::completed]))
+            // ->when($isHr, fn($q) => $q->whereIn('status', [EvalStatus::pending, EvalStatus::completed]))
             ->search($search)
             ->when($status,  fn($q) => $q->where('status', $status))
             ->when($quarter, fn($q) => $q->where(fn($sub) => $sub->where('reviewTypeRegular', $quarter)->orWhere('reviewTypeProbationary', $quarter)))
@@ -440,7 +440,7 @@ class UsersEvaluationController extends Controller
     public function destroy(UsersEvaluation $usersEvaluation)
     {
         $authUser = Auth::user();
-        if($authUser->roles()->where('name', 'admin')->exists()){
+        if($authUser->roles()->where('name', 'admin')->exists() || $authUser->roles()->where('name', 'hr')->exists()){
             $usersEvaluation->delete();
 
             return response()->json(
@@ -522,7 +522,6 @@ class UsersEvaluationController extends Controller
         return response()->json(
             [
                 'message'       =>  'Approval Unsuccessfully'
-
             ]
             ,400
         );
