@@ -339,13 +339,14 @@ class UserController extends Controller
                         ->whereRelation('roles' , 'name', 'evaluator')
                         ->get();
 
-          $user->load(
+        $user->load(
             [
                 'assigned_as_approvers' => function ($q) {
                     $q->select('users.id', 'fname', 'lname', 'email')
                         ->orderBy('sequence', 'asc');
                 }
-            ]);
+            ]
+        );
 
 
         return response()->json(
