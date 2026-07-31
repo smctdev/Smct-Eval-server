@@ -98,6 +98,7 @@ class OtpController extends Controller
             );
         }
 
+        User::where('email', $validated['email'])->update(['isResetPass' => true]);
         $userAuth = User::where('email',$validated['email'])->first();
 
         Auth::login($userAuth);

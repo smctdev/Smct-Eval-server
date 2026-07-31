@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string("avatar")->nullable();
             $table->boolean('requestSignatureReset')->default(false);
             $table->boolean('approvedSignatureReset')->default(false);
+            $table->boolean('isResetPass')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
